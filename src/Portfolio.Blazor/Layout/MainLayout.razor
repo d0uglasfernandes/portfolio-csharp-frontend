@@ -1,16 +1,32 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
+﻿@using Portfolio.Blazor.Services.Theme
+@inject ThemeService themeService
+
+@inherits LayoutComponentBase
+<div class="page h-screen w-screen dark:bg-zinc-900">
+    @* <div class="sidebar">
         <NavMenu />
-    </div>
+    </div> *@
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        <div class="h-12 w-full dark:bg-zinc-900">
+            <button class="flex flex-row items-end ml-auto mr-5 bg-blue-500 dark:bg-zinc-800 dark:text-white" @onclick="ToggleTheme">Toggle Theme</button>
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
+        @Body
     </main>
 </div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var isDarkMode = await themeService.IsDarkMode();
+            await themeService.SetDarkMode(isDarkMode);
+        }
+    }
+    private async Task ToggleTheme()
+    {
+        await themeService.SetDarkMode(!await themeService.IsDarkMode());
+    }
+}
